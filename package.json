@@ -1,0 +1,17 @@
+{
+  "name": "ws_v1",
+  "version": "1.0.0",
+  "description": "ws v1",
+  "main": "app.js",
+  "dependencies": {
+    "ejs": "^2.7.2",
+    "express": "^4.17.1",
+    "website-scraper": "^4.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "anthabarn",
+  "license": "ISC"
+}
