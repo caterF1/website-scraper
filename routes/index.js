@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router({ mergeParams: true });
 const scrape = require('website-scraper');
+const SaveToExistingDirectoryPlugin = require('website-scraper-existing-directory');
 
 
 router.get("/", function (req, res) {
@@ -27,7 +28,8 @@ router.get("/scraping", function (req, res) {
     const options = {
         urls: [newUrl],
         directory: `./test/${filename}`,
-
+        //this plugin is to replace the folder with same name
+        plugins: [ new SaveToExistingDirectoryPlugin() ],
 
         //recursive download depth and filter
         recursive: true,
