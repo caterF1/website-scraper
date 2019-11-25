@@ -27,29 +27,3 @@ function urlSubmit(event) {
     xmlhttp.send();
   
 }
-
-
-
-// function urlSubmit(event){
-//     let currentUrl = document.myform.myinput.value;
-//     console.log(currentUrl);
-// }
-
-// let myUrl;
-
-
-
-// const scrape = require('website-scraper');
-// const options = {
-//   urls: ['http://nodejs.org/'],
-//   directory: './test'
-// };
-
-// // with async/await
-// const result = await scrape(options);
-
-// // with promise
-// scrape(options).then((result) => {});
-
-// // or with callback
-// scrape(options, (error, result) => {});
