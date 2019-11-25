@@ -9,9 +9,25 @@ router.get("/", function (req, res) {
 
 router.get("/scraping", function (req, res) {
     let newUrl = req.query.myurl;
+
+    //getting the file/domain name of the website
+    let filename = "";
+    let fileIndex = 0;
+    let getIndex = () => { if (newUrl.includes("www.")) return 4 + newUrl.indexOf("www."); }
+    fileIndex = getIndex();
+    let endIndex = newUrl.indexOf(".", fileIndex);
+    filename = newUrl.slice(fileIndex, endIndex);
+    console.log("your website is saving in: " + filename + "folder");
+    class MyPlugin {
+        apply(registerAction) {
+            registerAction('onResourceSaved', ({ resource }) => console.log(`Resource ${resource.url} saved!`));
+
+        }
+    }
     const options = {
         urls: [newUrl],
-        directory: './test/test_download1',
+        directory: `./test/${filename}`,
+
 
         //recursive download depth and filter
         recursive: true,
@@ -19,7 +35,8 @@ router.get("/scraping", function (req, res) {
         maxRecursiveDepth: 2,
         urlFilter: function (url) {
             return url.indexOf(newUrl) === 0;
-        }
+        },
+        plugin: [new MyPlugin()]
     };
 
     scrape(options).then((result) => {
