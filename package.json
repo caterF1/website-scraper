@@ -6,7 +6,8 @@
   "dependencies": {
     "ejs": "^2.7.2",
     "express": "^4.17.1",
-    "website-scraper": "^4.2.0"
+    "website-scraper": "^4.2.0",
+    "website-scraper-existing-directory": "^0.1.0"
   },
   "devDependencies": {},
   "scripts": {
