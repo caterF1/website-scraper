@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router({ mergeParams: true });
 const scrape = require('website-scraper');
-const SaveToExistingDirectoryPlugin = require('website-scraper-existing-directory');
+const SaveResourceToExistingDirectoryPlugin = require('website-scraper-existing-directory');
 
 
 router.get("/", function (req, res) {
@@ -19,17 +19,19 @@ router.get("/scraping", function (req, res) {
     let endIndex = newUrl.indexOf(".", fileIndex);
     filename = newUrl.slice(fileIndex, endIndex);
     console.log("your website is saving in: " + filename + "folder");
+
+    //extra plugin to moniter downloading process (it is not working right now tho....)
     class MyPlugin {
         apply(registerAction) {
             registerAction('onResourceSaved', ({ resource }) => console.log(`Resource ${resource.url} saved!`));
-
+            registerAction('onResourceError', ({resource, error}) => console.log(`Resource ${resource.url} has error ${error}`));
         }
     }
     const options = {
         urls: [newUrl],
         directory: `./test/${filename}`,
         //this plugin is to replace the folder with same name
-        plugins: [ new SaveToExistingDirectoryPlugin() ],
+        plugins: [ new SaveResourceToExistingDirectoryPlugin(), new MyPlugin() ],
 
         //recursive download depth and filter
         recursive: true,
@@ -37,8 +39,7 @@ router.get("/scraping", function (req, res) {
         maxRecursiveDepth: 2,
         urlFilter: function (url) {
             return url.indexOf(newUrl) === 0;
-        },
-        plugin: [new MyPlugin()]
+        }
     };
 
     scrape(options).then((result) => {
