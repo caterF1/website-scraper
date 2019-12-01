@@ -13,11 +13,9 @@ router.get("/scraping", function (req, res) {
 
     //getting the file/domain name of the website
     let filename = "";
-    let fileIndex = 0;
-    let getIndex = () => { if (newUrl.includes("www.")) return 4 + newUrl.indexOf("www."); }
-    fileIndex = getIndex();
-    let endIndex = newUrl.indexOf(".", fileIndex);
-    filename = newUrl.slice(fileIndex, endIndex);
+    
+    filename = newUrl.replace(/https?:\/\//i,'').replace('www.','').split(/[/?#]/)[0];
+
     console.log("your website is saving in: " + filename + "folder");
 
     //extra plugin to moniter downloading process (it is not working right now tho....)
