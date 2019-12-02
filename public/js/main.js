@@ -6,10 +6,10 @@ function urlSubmit(event) {
     event.preventDefault();
 
     let xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function () {
+    xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
             let tempLoader = document.getElementById('loader_toggle');
-            if (tempLoader != null) {
+            if (tempLoader !== null) {
                 loaderContainer.removeChild(tempLoader);
             }
             let respMsg = document.createElement('li');
@@ -23,11 +23,9 @@ function urlSubmit(event) {
     xmlhttp.send();
 }
 
-form.addEventListener('submit', showLoader, false);
-
 function showLoader() {
     let checkEmpty = document.getElementById('url').value;
-    if (checkEmpty != "" ) {
+    if (checkEmpty !== '' ) {
         let loader = document.createElement('div');
         loader.setAttribute('id', 'loader_toggle');
         loaderContainer.appendChild(loader);

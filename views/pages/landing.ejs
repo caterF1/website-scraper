@@ -6,7 +6,7 @@
     <div class="my_container">
         <h1>Website Scraper</h1>
         <form class="form-group" action="/scraping" id="scrape_form" name="scrape_form" method="GET"
-            onsubmit="urlSubmit(event)">
+            onsubmit="urlSubmit(event); showLoader();">
             <label class="form-label" for="url">Enter URL</label>
             <input class="form-input" type="url" name="url" id="url" placeholder="https://www.example.com" size="30"
                 required>
