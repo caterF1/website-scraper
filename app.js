@@ -1,21 +1,18 @@
-var express = require("express");
-var app = express();
-var bodyParser = require("body-parser");
+const env = process.env.NODE_ENV || 'development';
+const config = require('./config')[env];
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
+const indexRoutes = require("./routes/index");
 
-
-
-//requiring routes
-var indexRoutes = require("./routes/index");
 app.set("view engine", "ejs");
 app.use(bodyParser.json({limit:"5mb"}));
 app.use(bodyParser.urlencoded({limit:"5mb", extended:true}));
-app.use("/public", express.static(__dirname +"/public"));
+app.use("/public", express.static(__dirname + "/public"));
 
 app.use("/", indexRoutes);
 
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || config.port;
 app.listen(port, process.env.IP, function(){
-    console.log("The Website Scraper server has started");
+    console.log(`Website scraper server started on port ${port}`);
 })
-
-

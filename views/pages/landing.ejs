@@ -1,10 +1,14 @@
 <%- include("../partials/header") -%>
 <h1>Website Scraper</h1>
-<p id="test">put your url in here</p>
-<form action="/scraping" id="url-form" name="myform" method="POST" onsubmit="urlSubmit(event)">
-    <input type="url" name="myurl" id="url-input" placeholder="https://www.example.com"  size="30" required>
+<form action="/scraping" id="scrape_form" name="scrape_form" method="GET" onsubmit="urlSubmit(event)">
+    <label for="url">Enter URL</label>
+    <input type="url" name="url" id="url" placeholder="https://www.example.com" size="30" required>
     <button type="submit">submit</button>
 </form>
+
+<h2>Execution Results</h2>
+<ol id="execution_results" type="1">
+</ol>
 
 <%- include("../partials/footer") -%>
 <script src="/public/js/main.js"></script>

@@ -1,51 +1,47 @@
-var express = require("express");
-var router = express.Router({ mergeParams: true });
+const env = process.env.NODE_ENV || 'development';
+const config = require('../config')[env];
+const express = require("express");
+const router = express.Router({ mergeParams: true });
 const scrape = require('website-scraper');
 const SaveResourceToExistingDirectoryPlugin = require('website-scraper-existing-directory');
-
 
 router.get("/", function (req, res) {
     res.render("pages/landing");
 });
 
-router.get("/scraping", function (req, res) {
-    let newUrl = req.query.myurl;
+router.get("/scrape", function (req, res) {
+    let url = req.query.url;
+    let domain = url.replace(/https?:\/\//i, '').replace('www.', '').split(/[/?#]/)[0];
 
-    //getting the file/domain name of the website
-    let filename = "";
-    
-    filename = newUrl.replace(/https?:\/\//i,'').replace('www.','').split(/[/?#]/)[0];
+    const targetDir = `${config.download_directory}/${domain}`;
+    console.log(`Downloading files from ${url} to directory: ${targetDir}`);
 
-    console.log("your website is saving in: " + filename + "folder");
-
-    //extra plugin to moniter downloading process (it is not working right now tho....)
-    class MyPlugin {
+    class StatusMonitorPlugin {
         apply(registerAction) {
             registerAction('onResourceSaved', ({ resource }) => console.log(`Resource ${resource.url} saved!`));
             registerAction('onResourceError', ({resource, error}) => console.log(`Resource ${resource.url} has error ${error}`));
         }
     }
     const options = {
-        urls: [newUrl],
-        directory: `./test/${filename}`,
-        //this plugin is to replace the folder with same name
-        plugins: [ new SaveResourceToExistingDirectoryPlugin(), new MyPlugin() ],
-
-        //recursive download depth and filter
+        urls: [url],
+        directory: `./${targetDir}`,
+        plugins: [ new SaveResourceToExistingDirectoryPlugin(), new StatusMonitorPlugin() ],
         recursive: true,
         maxDepth: 2,
         maxRecursiveDepth: 2,
         urlFilter: function (url) {
-            return url.indexOf(newUrl) === 0;
+            return url.indexOf(url) === 0;
         }
     };
 
     scrape(options).then((result) => {
-        console.log("Webpages succesfully downloaded");
+        const successMsg = `Resources succesfully downloaded to directory: ${targetDir}`;
+        console.log(successMsg);
+        res.send({ "message" : successMsg });
     }).catch((err) => {
-        console.log("An error ocurred", err);
+        console.log(err);
+        res.status(400).send({ "message" : JSON.stringify(err.cause) });
     });
-    res.send({ "newUrl": `${newUrl}` });
 });
 
 module.exports = router;
