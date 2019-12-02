@@ -1,14 +1,33 @@
 <%- include("../partials/header") -%>
-<h1>Website Scraper</h1>
-<form action="/scraping" id="scrape_form" name="scrape_form" method="GET" onsubmit="urlSubmit(event)">
-    <label for="url">Enter URL</label>
-    <input type="url" name="url" id="url" placeholder="https://www.example.com" size="30" required>
-    <button type="submit">submit</button>
-</form>
+<div id="loader_container">
 
-<h2>Execution Results</h2>
-<ol id="execution_results" type="1">
-</ol>
+</div>
+<div class="container">
+    <div class="my_container">
+        <h1>Website Scraper</h1>
+        <form class="form-group" action="/scraping" id="scrape_form" name="scrape_form" method="GET"
+            onsubmit="urlSubmit(event)">
+            <label class="form-label" for="url">Enter URL</label>
+            <input class="form-input" type="url" name="url" id="url" placeholder="https://www.example.com" size="30"
+                required>
+            <div class="submit_btn_container">
+                <button id="submit_btn" class="btn" type="submit">submit</button>
+
+            </div>
+        </form>
+
+        <h4 class="execution_results_title">Execution Results</h4>
+        <div class="container">
+            <div class="columns">
+                    <ol id="execution_results" class="col-9" type="1">
+                    </ol>
+            </div>
+            
+        </div>
+
+    </div>
+
+</div>
 
 <%- include("../partials/footer") -%>
 <script src="/public/js/main.js"></script>
