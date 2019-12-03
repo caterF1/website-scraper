@@ -14,6 +14,8 @@ router.get('/scrape', function (req, res) {
     let domain = url.replace(/https?:\/\//i, '').replace('www.', '').split(/[/?#]/)[0];
 
     const targetDir = `./${config.download_directory}/${domain}`;
+    let fileEditArr = [];
+    let fileReplaceArr = [];
     console.log(`Downloading files from ${url} to directory: ${targetDir}`);
 
     class StatusMonitorPlugin {
@@ -22,19 +24,19 @@ router.get('/scrape', function (req, res) {
                 console.log(`Resource ${resource.filename} saved!`);
                 //change extensions: php -> css
                 if (resource.filename.includes('.php')) {
-                    console.log('=====================found php file===============' + resource.filename);
-                    let filenameChange =resource.filename.split(/[.]/)[0];
+                    console.log('===============found php file===============' + resource.filename);
+                    let filenameChange = resource.filename.split(/[.]/)[0];
 
                     const { exec } = require('child_process');
                     exec(`mv ${targetDir}/${filenameChange}.php ${targetDir}/${filenameChange}.css`, (err, stdout, stderr) => {
                         if (err) {
                             //some err occurred
-                            console.error(err)
+                            console.error(err);
                         } else {
                             // the *entire* stdout and stderr (buffered)
-                            console.log("extension changed");
-                            console.log(`stdout: ${stdout}`);
-                            console.log(`stderr: ${stderr}`);
+                            fileEditArr.push(`${filenameChange}.php`);
+                            fileReplaceArr.push(`${filenameChange}.css`);
+                            console.log("=================extension changed=================");
                         }
                     });
                 }
@@ -58,23 +60,35 @@ router.get('/scrape', function (req, res) {
         const successMsg = `Resources succesfully downloaded to directory: ${targetDir}`;
         console.log(successMsg);
         //change attributes in link tag in every html file: php -> css
-        const fs =require('fs') ;
+        const fs = require('fs');
         fs.readdir(targetDir, (err, files) => {
+            if (err) throw err;
             files.forEach(file => {
-              console.log(file);
-            //   if(file.includes('.html')){
-            //       console.log(file);
-            //       let arrChange = [];
-            //       arrChange.Document.getElementsByTagName('link');
-            //       for (let eachTag of arrChange) {
-            //           if(eachTag.href.includes('.php')){
-            //               let eachTagHref = eachTag.href.split(/[.php]/)[0];
-            //               eachTag.setAttribute('href', `${eachTagHref}.css`);
-            //           }
-            //       }
-            //   }
+                if (file.includes('.html')) {
+                    //   console.log(file);
+                    fs.readFile(`${targetDir}/${file}`, (err, data) => {
+                        console.log(file)
+                        if (err) throw err;
+                        let dataStr = '';
+                        // let result = '';
+                        dataStr = data.toString();
+                        for (let i = 0; i < fileEditArr.length; i++) {
+                            console.log(dataStr.includes(fileEditArr[i]));
+                            if (dataStr.includes(fileEditArr[i])) {
+                                console.log(fileEditArr[i] + " -> " + fileReplaceArr[i]);
+                                let regex = new RegExp(fileEditArr[i], 'gi');
+                                dataStr = dataStr.replace(regex, fileReplaceArr[i]);
+                            }
+                        }
+                        fs.writeFile(`${targetDir}/${file}`, dataStr, 'utf8', (err) => {
+                            if (err) return console.log(err);
+                            console.log("rewrite successfully!");
+                        });
+                    });
+                }
             });
-          });
+        });
+        console.log("The php file name in html has been replaced with css file name!");
         res.send({ 'message': successMsg });
     }).catch((err) => {
         console.log(err);
